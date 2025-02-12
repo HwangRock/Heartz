@@ -23,14 +23,8 @@ public class Client {
     @Column(name = "user_id", nullable = false, length = 20)
     private String userId;
 
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "name", nullable = false, length = 100)
     private String name;
-
-    @Column(name = "birth")
-    private LocalDate birth;
 
     @ColumnDefault("'0'")
     @Column(name = "role", nullable = false, length = 100)
@@ -43,9 +37,8 @@ public class Client {
     private String email;
 
     @Builder
-    public Client(String userId, String password, String name, String role, String address, String email) {
+    public Client(String userId, String name, String role, String address, String email) {
         this.userId = userId;
-        this.password = password;
         this.name = name;
         this.role = role;
         this.address = address;
