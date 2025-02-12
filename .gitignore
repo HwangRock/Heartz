@@ -38,4 +38,5 @@ out/
 ### VS Code ###
 .vscode/
 
+### local env mysql
 .env
