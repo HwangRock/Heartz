@@ -1,12 +1,15 @@
 package blaybus.mvp.back.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
-@Getter
-@Setter
 @Entity
+@RequiredArgsConstructor
+@Getter
+@DynamicUpdate
 @Table(name = "style", schema = "test")
 public class Style {
     @Id
@@ -22,5 +25,12 @@ public class Style {
 
     @Column(name = "make_up")
     private String makeUp;
+
+    @Builder
+    public Style(Client user, String feature, String makeUp) {
+        this.user = user;
+        this.feature = feature;
+        this.makeUp = makeUp;
+    }
 
 }

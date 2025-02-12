@@ -1,16 +1,21 @@
 package blaybus.mvp.back.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
-@Getter
-@Setter
 @Entity
+@RequiredArgsConstructor
+@Getter
+@DynamicUpdate
 @Table(name = "designers", schema = "test")
 public class Designer {
+
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "designer_id", nullable = false)
@@ -44,4 +49,17 @@ public class Designer {
     @Column(name = "account")
     private String account;
 
+    @Builder
+    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, String rating, String account) {
+        this.designerId = designerId;
+        this.name = name;
+        this.location = location;
+        this.address = address;
+        this.profilePhoto = profilePhoto;
+        this.field = field;
+        this.offPrice = offPrice;
+        this.onPrice = onPrice;
+        this.rating = rating;
+        this.account = account;
+    }
 }

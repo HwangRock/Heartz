@@ -1,20 +1,23 @@
 package blaybus.mvp.back.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
-@Getter
 @Entity
+@RequiredArgsConstructor
+@Getter
+@DynamicUpdate
 @Table(name = "clients", schema = "test")
 public class Client {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id", nullable = false, length = 20)
@@ -39,4 +42,13 @@ public class Client {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Builder
+    public Client(String userId, String password, String name, String role, String address, String email) {
+        this.userId = userId;
+        this.password = password;
+        this.name = name;
+        this.role = role;
+        this.address = address;
+        this.email = email;
+    }
 }

@@ -1,19 +1,23 @@
 package blaybus.mvp.back.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
 @Entity
+@RequiredArgsConstructor
+@Getter
+@DynamicUpdate
 @Table(name = "review", schema = "test")
 public class Review {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -37,5 +41,15 @@ public class Review {
 
     @Column(name = "regist_date")
     private LocalDate registDate;
+
+    @Builder
+    public Review(Client client, Designer designer, String photoId, String reviewCn, Integer starRating, LocalDate registDate) {
+        this.user = client;
+        this.designer = designer;
+        this.photoId = photoId;
+        this.reviewCn = reviewCn;
+        this.starRating = starRating;
+        this.registDate = registDate;
+    }
 
 }
