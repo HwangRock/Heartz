@@ -1,7 +1,7 @@
 package blaybus.mvp.back.exception;
 
 
-import blaybus.mvp.back.dto.respone.ResponseDto;
+import blaybus.mvp.back.dto.response.ResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

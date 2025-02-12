@@ -1,11 +1,9 @@
 package blaybus.mvp.back.exception;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@RequiredArgsConstructor
 public enum ErrorDefine {
 
     // Bad Request
@@ -35,4 +33,10 @@ public enum ErrorDefine {
     private final String errorCode;
     private final HttpStatus httpStatus;
     private final String message;
+
+    ErrorDefine(String errorCode, HttpStatus httpStatus, String message) {
+        this.errorCode = errorCode;
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
 }
