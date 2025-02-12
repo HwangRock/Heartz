@@ -24,6 +24,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      - name: Set up MySQL
+        run: |
+          echo "MySQL is ready"
+
       - name: Start MySQL
         run:
           sudo /etc/init.d/mysql start
