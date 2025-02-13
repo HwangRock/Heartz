@@ -7,14 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
-
 @Entity
 @RequiredArgsConstructor
 @Getter
 @DynamicUpdate
 @Table(name = "clients", schema = "test")
 public class Client {
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
