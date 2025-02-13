@@ -27,8 +27,10 @@ public enum ErrorDefine {
     TOKEN_UNKNOWN("4036", HttpStatus.FORBIDDEN, "Forbidden: Token Unknown"),
     TOKEN_INVALID("4037", HttpStatus.FORBIDDEN, "Forbidden: Token Invalid"),
 
-    DUPLICATE_STUDENT_NUMBER("4038", HttpStatus.FORBIDDEN, "Forbidden: Duplicate Student Number");
+    DUPLICATE_STUDENT_NUMBER("4038", HttpStatus.FORBIDDEN, "Forbidden: Duplicate Student Number"),
 
+    // 디자이너 id 존재 오류
+    DESIGNER_ID_EXIST("4048", HttpStatus.FORBIDDEN, "Forbidden: The designer ID already exists or is not allowed.");
 
     private final String errorCode;
     private final HttpStatus httpStatus;

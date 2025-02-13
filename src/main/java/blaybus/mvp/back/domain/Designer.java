@@ -46,11 +46,8 @@ public class Designer {
     @Column(name = "rating")
     private String rating;
 
-    @Column(name = "account")
-    private String account;
-
     @Builder
-    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, String rating, String account) {
+    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, String rating) {
         this.designerId = designerId;
         this.name = name;
         this.location = location;
@@ -60,6 +57,5 @@ public class Designer {
         this.offPrice = offPrice;
         this.onPrice = onPrice;
         this.rating = rating;
-        this.account = account;
     }
 }
