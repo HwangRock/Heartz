@@ -1,5 +1,6 @@
 package blaybus.mvp.back.domain;
 
+import blaybus.mvp.back.dto.Payment.PaymentRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,33 +21,31 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "secdule_id", nullable = false)
-    private Secdule secdule;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "designer_id", nullable = false, referencedColumnName = "designer_id")
-    private Designer designer;
+    @Column(name="impuid")
+    private String impuid;
 
     @Column(name = "amount")
-    private Integer amount;
-
-    @Column(name = "payment_method")
-    private String paymentMethod;
+    private Long amount;
 
     @Column(name = "payment_status")
-    private Boolean paymentStatus;
+    private String paymentStatus;
 
     @Column(name = "create_at")
-    private Instant createAt;
+    private String createAt;
+
+    @Column(name= "userName")
+    private String userName;
+
+    @Column(name="userEmail")
+    private String userEmail;
 
     @Builder
-    public Payment(Secdule secdule, Designer designer, Integer amount, String paymentMethod, Boolean paymentStatus, Instant createAt) {
-        this.secdule = secdule;
-        this.designer = designer;
-        this.amount = amount;
-        this.paymentMethod = paymentMethod;
-        this.paymentStatus = paymentStatus;
-        this.createAt = createAt;
+    public Payment(PaymentRequestDTO dto) {
+        this.amount = dto.getAmount();
+        this.paymentStatus = dto.getStatus();
+        this.createAt = dto.getCreateDate();
+        this.userName=dto.getName();
+        this.userEmail=dto.getEmail();
+        this.impuid=dto.getImpuid();
     }
 }
