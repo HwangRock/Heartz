@@ -7,14 +7,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.Instant;
-
 @Entity
 @RequiredArgsConstructor
 @Getter
 @DynamicUpdate
 @Table(name = "payment", schema = "test")
-public class Payment {
+public class PaymentEntity {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -40,7 +38,7 @@ public class Payment {
     private String userEmail;
 
     @Builder
-    public Payment(PaymentRequestDTO dto) {
+    public PaymentEntity(PaymentRequestDTO dto) {
         this.amount = dto.getAmount();
         this.paymentStatus = dto.getStatus();
         this.createAt = dto.getCreateDate();
