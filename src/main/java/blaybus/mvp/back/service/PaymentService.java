@@ -8,6 +8,7 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,10 +19,10 @@ public class PaymentService {
     private final IamportClient iamportClient;
     private final PaymentRepository paymentRepository;
 
-    public PaymentService(PaymentRepository paymentRepository) {
+    public PaymentService(PaymentRepository paymentRepository,@Value("${iamport.rest-api-key}") String apiKey,
+                          @Value("${iamport.rest-api-secret}") String apiSecret) {
         // 포트원 토큰 발급을 위해 API 키 입력
-        this.iamportClient = new IamportClient("REST_API_KEY",
-                "REST_API_SECRET");
+        this.iamportClient = new IamportClient(apiKey, apiSecret);
         this.paymentRepository = paymentRepository;
     }
 
