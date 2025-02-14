@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -53,5 +55,19 @@ public class PaymentService {
             paymentDto.setStatus("이미 결제 되었습니다."); // 클라이언트에게 Status 값 오류 코드 보냄
             return paymentDto;
         }
+    }
+
+    public List<PaymentResponseDTO> getPaymentsByEmail(String userEmail) {
+        // 이메일로 결제 기록 조회
+        List<PaymentEntity> paymentEntities = paymentRepository.findAllByUserEmail(userEmail);
+
+        // 조회된 결제 기록을 DTO로 변환하여 반환
+        return paymentEntities.stream()
+                .map(payment -> PaymentResponseDTO.builder()
+                        .impuid(payment.getImpuid())
+                        .amount(payment.getAmount())
+                        .status(payment.getPaymentStatus())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
