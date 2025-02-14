@@ -4,11 +4,7 @@ import blaybus.mvp.back.dto.request.DesignerAddRequestDto;
 import blaybus.mvp.back.dto.response.ResponseDto;
 import blaybus.mvp.back.service.DesignerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,5 +16,10 @@ public class AdminController {
     @PostMapping("/addDesigner")
     public ResponseDto<Boolean> addDesigner(@RequestBody DesignerAddRequestDto designerAddRequestDto) {
         return new ResponseDto<>(designerService.createDesigner(designerAddRequestDto));
+    }
+
+    @PutMapping("/updateDesigner")
+    public ResponseDto<Boolean> updateDesigner(@RequestBody DesignerAddRequestDto designerAddRequestDto) {
+        return new ResponseDto<>(designerService.updateDesigner(designerAddRequestDto));
     }
 }

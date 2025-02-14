@@ -15,6 +15,8 @@ public enum ErrorDefine {
     MESSAGE_NOT_FOUND("4046", HttpStatus.NOT_FOUND, "Not Found: Message Not Found"),
     MAJOR_NOT_FOUND("4046", HttpStatus.NOT_FOUND, "Not Found: Major Not Found"),
     NO_COMPLETES_FOUND("4047", HttpStatus.NOT_FOUND, "Not Found: Complete Not Found"),
+    DESIGNER_ID_NOT_FOUND("4041", HttpStatus.NOT_FOUND, "Not Found: Designer Not Found"),
+
     //Forbidden
     UNAUTHORIZED_USER("4030", HttpStatus.FORBIDDEN, "Forbidden: Unauthorized User"),
 

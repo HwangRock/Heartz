@@ -13,7 +13,8 @@ public record DesignerAddRequestDto(
         String field,
         Integer offPrice,
         Integer onPrice,
-        String rating
+        Integer rating,
+        String text
         ) {
 
     public Designer toEntity() {
@@ -26,6 +27,7 @@ public record DesignerAddRequestDto(
                 .offPrice(this.offPrice)
                 .onPrice(this.onPrice)
                 .rating(this.rating)
+                .text(this.text)
                 .build();
     }
 }

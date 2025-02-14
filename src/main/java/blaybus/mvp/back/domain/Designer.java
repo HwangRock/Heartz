@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 @Entity
 @RequiredArgsConstructor
 @Getter
@@ -42,12 +43,14 @@ public class Designer {
     @Column(name = "on_price")
     private Integer onPrice;
 
-    @Lob
     @Column(name = "rating")
-    private String rating;
+    private Integer rating;
 
-    @Builder
-    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, String rating) {
+    @Column(name = "text")
+    private String text;
+
+    @Builder(toBuilder = true)
+    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, Integer rating, String text) {
         this.designerId = designerId;
         this.name = name;
         this.location = location;
@@ -57,5 +60,6 @@ public class Designer {
         this.offPrice = offPrice;
         this.onPrice = onPrice;
         this.rating = rating;
+        this.text = text;
     }
 }
