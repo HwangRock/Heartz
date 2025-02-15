@@ -33,11 +33,13 @@ public class PaymentService {
         IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(imp_uid); // 결제 검증 시작
         Long amount = (iamportResponse.getResponse().getAmount()).longValue(); // 결제 금액
         String status = iamportResponse.getResponse().getStatus(); // paid 이면 1
+        String date= String.valueOf(iamportResponse.getResponse().getPaidAt()); // 날짜를 문자열로 바꿔서 저장
 
         PaymentResponseDTO paymentDto = PaymentResponseDTO.builder() // Dto 변환
                 .impuid(imp_uid)
                 .amount(amount)
                 .status(status)
+                .transactiondate(date)
                 .build();
 
         if (paymentRepository.countByImpuidContainsIgnoreCase(imp_uid) == 0) { // 중복하는 값이 없으면
@@ -67,6 +69,7 @@ public class PaymentService {
                         .impuid(payment.getImpuid())
                         .amount(payment.getAmount())
                         .status(payment.getPaymentStatus())
+                        .transactiondate(payment.getCreateAt())
                         .build())
                 .collect(Collectors.toList());
     }
