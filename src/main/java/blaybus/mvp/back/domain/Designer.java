@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
 @Entity
 @RequiredArgsConstructor
 @Getter
+@Setter
 @DynamicUpdate
 @Table(name = "designers", schema = "test")
 public class Designer {

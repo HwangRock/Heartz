@@ -7,4 +7,8 @@ import java.util.Optional;
 public interface DesignerRepository extends JpaRepository<Designer, Long> {
 
     Optional<Designer> findByDesignerId(Long aLong);
+
+    boolean existsByDesignerId(Long designerId);
+
+    void deleteByDesignerId(Long aLong);
 }
