@@ -6,6 +6,7 @@ import blaybus.mvp.back.dto.Payment.PaymentResponseDTO;
 import blaybus.mvp.back.repository.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,4 +74,46 @@ public class PaymentService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public PaymentResponseDTO cancelPayment(PaymentRequestDTO dto) throws IamportResponseException, IOException {
+        String impUid = dto.getImpuid(); // 거래 고유 ID
+        CancelData cancelData = new CancelData(impUid, true);
+        IamportResponse<Payment> iamportResponse = iamportClient.cancelPaymentByImpUid(cancelData); // Iamport 결제 취소 API 호출
+
+        // Iamport 응답에서 취소 상태 확인
+        String status = iamportResponse.getResponse().getStatus(); // 결제 상태
+        Long amount = (iamportResponse.getResponse().getAmount()).longValue(); // 취소된 금액
+        String date = String.valueOf(iamportResponse.getResponse().getCancelledAt()); // 취소된 시간 문자열로 변환
+
+        // 취소된 거래 정보를 DTO로 생성
+        PaymentResponseDTO paymentDto = PaymentResponseDTO.builder()
+                .impuid(impUid)
+                .amount(amount)
+                .status(status.equals("cancelled") ? "cancelled" : "error") // 상태가 'cancelled'이면 "취소됨"
+                .transactiondate(date)
+                .build();
+
+        // DB에서 거래 ID로 결제 정보 검색
+        PaymentEntity paymentEntity = paymentRepository.findByImpuid(impUid);
+
+        if (paymentEntity != null) {
+            // 거래 상태를 취소로 업데이트
+            if (status.equals("cancelled")) {
+                paymentEntity.setPaymentStatus("cancelled"); // 상태 업데이트
+                paymentRepository.save(paymentEntity); // 업데이트 저장
+                return paymentDto; // 성공적으로 취소된 결과 반환
+            }
+            else {
+                // 결제 취소 실패 시 응답 처리
+                paymentDto.setStatus("결제 취소 실패: " + status);
+                return paymentDto;
+            }
+        }
+        else {
+            // 거래를 찾을 수 없는 경우
+            paymentDto.setStatus("거래를 찾을 수 없습니다.");
+            return paymentDto;
+        }
+    }
+
 }

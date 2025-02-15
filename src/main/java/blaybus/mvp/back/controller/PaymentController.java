@@ -18,7 +18,7 @@ public class PaymentController {
     }
 
     @ResponseBody
-    @PostMapping("/verify") // https://URL/verify/{거래고유번호}
+    @PostMapping("/verify")
     public PaymentResponseDTO verifyPayment(@RequestBody PaymentRequestDTO dto) throws IamportResponseException, IOException {
         return paymentService.verifyPayment(dto); // 결제 검증 및 DB 값 삽입
     }
@@ -27,4 +27,10 @@ public class PaymentController {
     public List<PaymentResponseDTO> getPaymentsByEmail(@RequestBody PaymentRequestDTO dto) {
         return paymentService.getPaymentsByEmail(dto.getEmail());
     }
+
+    @PostMapping("/cancel")
+    public PaymentResponseDTO cancelPayment(@RequestBody PaymentRequestDTO dto) throws IamportResponseException, IOException {
+        return paymentService.cancelPayment(dto);
+    }
+
 }
