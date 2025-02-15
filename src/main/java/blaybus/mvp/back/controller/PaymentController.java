@@ -1,7 +1,7 @@
 package blaybus.mvp.back.controller;
 
-import blaybus.mvp.back.dto.Payment.PaymentRequestDTO;
-import blaybus.mvp.back.dto.Payment.PaymentResponseDTO;
+import blaybus.mvp.back.dto.request.PaymentRequestDTO;
+import blaybus.mvp.back.dto.response.PaymentResponseDTO;
 import blaybus.mvp.back.service.PaymentService;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import org.springframework.web.bind.annotation.*;

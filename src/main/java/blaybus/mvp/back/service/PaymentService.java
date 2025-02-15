@@ -1,8 +1,8 @@
 package blaybus.mvp.back.service;
 
 import blaybus.mvp.back.domain.PaymentEntity;
-import blaybus.mvp.back.dto.Payment.PaymentRequestDTO;
-import blaybus.mvp.back.dto.Payment.PaymentResponseDTO;
+import blaybus.mvp.back.dto.request.PaymentRequestDTO;
+import blaybus.mvp.back.dto.response.PaymentResponseDTO;
 import blaybus.mvp.back.repository.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;

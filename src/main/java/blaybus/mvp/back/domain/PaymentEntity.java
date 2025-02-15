@@ -1,6 +1,6 @@
 package blaybus.mvp.back.domain;
 
-import blaybus.mvp.back.dto.Payment.PaymentRequestDTO;
+import blaybus.mvp.back.dto.request.PaymentRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
