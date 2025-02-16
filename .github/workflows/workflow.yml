@@ -19,6 +19,8 @@ jobs:
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_DATABASE: test
+      IAMPORT_REST_API_KEY: ${{ secrets.IAMPORT_REST_API_KEY }}
+      IAMPORT_REST_API_SECRET: ${{ secrets.IAMPORT_REST_API_SECRET }}
 
     steps:
       - name: Checkout source code

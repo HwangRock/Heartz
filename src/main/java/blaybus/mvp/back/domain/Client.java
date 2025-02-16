@@ -3,19 +3,20 @@ package blaybus.mvp.back.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
-
-@Getter
 @Entity
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Getter
+@DynamicUpdate
 @Table(name = "clients", schema = "test")
 public class Client {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id", nullable = false, length = 50)
@@ -53,5 +54,6 @@ public class Client {
     public String getRoleKey() {
         return this.role.getKey();
     }
+
 
 }

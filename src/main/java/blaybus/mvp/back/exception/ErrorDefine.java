@@ -15,6 +15,8 @@ public enum ErrorDefine {
     MESSAGE_NOT_FOUND("4046", HttpStatus.NOT_FOUND, "Not Found: Message Not Found"),
     MAJOR_NOT_FOUND("4046", HttpStatus.NOT_FOUND, "Not Found: Major Not Found"),
     NO_COMPLETES_FOUND("4047", HttpStatus.NOT_FOUND, "Not Found: Complete Not Found"),
+    DESIGNER_ID_NOT_FOUND("4041", HttpStatus.NOT_FOUND, "Not Found: Designer Not Found"),
+
     //Forbidden
     UNAUTHORIZED_USER("4030", HttpStatus.FORBIDDEN, "Forbidden: Unauthorized User"),
 
@@ -27,8 +29,10 @@ public enum ErrorDefine {
     TOKEN_UNKNOWN("4036", HttpStatus.FORBIDDEN, "Forbidden: Token Unknown"),
     TOKEN_INVALID("4037", HttpStatus.FORBIDDEN, "Forbidden: Token Invalid"),
 
-    DUPLICATE_STUDENT_NUMBER("4038", HttpStatus.FORBIDDEN, "Forbidden: Duplicate Student Number");
+    DUPLICATE_STUDENT_NUMBER("4038", HttpStatus.FORBIDDEN, "Forbidden: Duplicate Student Number"),
 
+    // 디자이너 id 존재 오류
+    DESIGNER_ID_EXIST("4048", HttpStatus.FORBIDDEN, "Forbidden: The designer ID already exists or is not allowed.");
 
     private final String errorCode;
     private final HttpStatus httpStatus;
