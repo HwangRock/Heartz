@@ -1,8 +1,6 @@
 package blaybus.mvp.back.controller;
 
 import blaybus.mvp.back.jwt.TokenProvider;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "")
+@RequestMapping("/api/v1/auth")
 public class ClientController {
 
     private final TokenProvider tokenProvider;
@@ -32,12 +30,18 @@ public class ClientController {
         return "Bearer " + token;
     }
 
-    // 세션 무효화 테스트 엔드포인트
-    @GetMapping("/test")
-    public void test01(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate(); // 세션 무효화
-        }
+    // 토큰 생성 테스트용 API
+    @GetMapping("/test-token")
+    public String testToken() {
+        // Mock 데이터
+        String username = "test_user";
+        String email = "test_user@example.com";
+
+        // JWT 생성
+        String token = tokenProvider.createToken(username, email);
+
+        // Bearer 토큰 형태로 반환
+        return "Bearer " + token;
     }
+
 }

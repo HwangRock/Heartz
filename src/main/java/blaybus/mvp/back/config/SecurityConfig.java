@@ -23,16 +23,24 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/oauth2/authorization/google", "/login/oauth2/code/google", "/error", "/favicon.ico").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/",
+                                "/login/oauth2/code/google",
+                                "/error",
+                                "/favicon.ico",
+                                "/api/v1/auth/test-token"
+                        ).permitAll() // 이 경로들은 인증 없이 접근 가능
+                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화
+
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("/login-success", true)
+                        .defaultSuccessUrl("/", true) // 인증 성공 후 갈 url. 나중에 수정해야함.
+                        .failureUrl("/login?error=true") // 인증 실패시 login으로 다시 이동
                 )
-                // JWT 인증 필터 추가
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // JWT 인증 필터 추가
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
+
