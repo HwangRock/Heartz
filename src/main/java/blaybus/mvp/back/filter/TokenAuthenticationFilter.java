@@ -47,23 +47,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
             // 로그아웃 정보 set ~~
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "토큰 만료됨.");
+
             //로그인 페이지로 redirect
+            response.sendRedirect("http://localhost:8080/oauth2/authorization/google");
         }
-
-
-//        //헤더에서 accessToken 추출
-//        String accessToken = resolveToken(request);
-//
-//        // accessToken 검증
-//        if (tokenProvider.validateToken(accessToken)) {
-//            setAuthentication(accessToken);
-//        } else {
-//            // 만료되었을 경우 로그아웃.
-//
-//            // 로그아웃 정보 set ~~
-//            response.sendError(HttpServletResponse.SC_FORBIDDEN, "토큰 만료됨.");
-//            //로그인 페이지로 redirect
-//        }
 
         filterChain.doFilter(request, response);
 
