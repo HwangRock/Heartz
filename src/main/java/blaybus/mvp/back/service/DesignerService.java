@@ -129,9 +129,8 @@ public class DesignerService {
                             Integer onPrice = d.getOnPrice();
 
                             // 가격이 null이 아닐 경우, minPrice ≤ price ≤ maxPrice 여부 확인
-                            boolean isOnPriceValid = (onPrice != null && onPrice >= minPrice && onPrice <= maxPrice);
 
-                            return isOnPriceValid;
+                            return (onPrice != null && onPrice >= minPrice && onPrice <= maxPrice);
                         })
                         .collect(Collectors.toList());
             }
@@ -142,9 +141,8 @@ public class DesignerService {
                             Integer offPrice = d.getOffPrice();
 
                             // 가격이 null이 아닐 경우, minPrice ≤ price ≤ maxPrice 여부 확인
-                            boolean isOffPriceValid = (offPrice != null && offPrice >= minPrice && offPrice <= maxPrice);
 
-                            return isOffPriceValid;
+                            return (offPrice != null && offPrice >= minPrice && offPrice <= maxPrice);
                         })
                         .collect(Collectors.toList());
             }
