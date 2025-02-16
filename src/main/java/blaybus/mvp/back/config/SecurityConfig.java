@@ -44,6 +44,7 @@ public class SecurityConfig {
                 mvc.pattern("/api/vi/user/login-test"),
                 mvc.pattern("/login/oauth2/code/google"),
                 //mvc.pattern("/token-refresh"),
+                mvc.pattern("/api/v1/designer/**"),
                 mvc.pattern("/favicon.ico"),
                 mvc.pattern("/error")
         };
