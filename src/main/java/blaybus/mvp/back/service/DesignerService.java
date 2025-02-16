@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,6 +83,14 @@ public class DesignerService {
         return true;
     }
 
+    // 디자이너 상세 화면(개별 디자이너)
+    public DesignerResponseDto getDesigner(Long designerId) {
+        Designer designer = designerRepository.findByDesignerId(designerId)
+                .orElseThrow(() -> new ApiException(ErrorDefine.DESIGNER_ID_NOT_FOUND));
+
+        return DesignerResponseDto.of(designer);
+    }
+
     // 필터에 따라서 디자이너 보여줌
     public List<DesignerResponseDto> showDesignerList(DesignerRequestDto designerRequestDto) {
         // 기본값 : 전체 디자이너 조회
@@ -148,7 +157,17 @@ public class DesignerService {
             }
         }
 
+        // 4. 지역구 필터링
+        if(designerRequestDto.location() != null && !designerRequestDto.location().isEmpty()) {
+            designers = designers.stream()
+                    .filter(d -> d.getLocation().contains(designerRequestDto.location()))
+                    .collect(Collectors.toList());
+        }
 
+        // 5. (선택사항 : 추천 알고리즘 적용 가능) rating 기반 내림차순 정렬ㄴ
+        designers.sort(Comparator.comparing(Designer::getRating, Comparator.nullsLast(Comparator.reverseOrder())));
+
+        // 반환
         return designers.stream()
                 .map(DesignerResponseDto::of)
                 .collect(Collectors.toList());
