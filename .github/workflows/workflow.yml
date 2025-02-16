@@ -21,8 +21,8 @@ jobs:
       DB_DATABASE: test
       IAMPORT_REST_API_KEY: ${{ secrets.IAMPORT_REST_API_KEY }}
       IAMPORT_REST_API_SECRET: ${{ secrets.IAMPORT_REST_API_SECRET }}
-      GOOGLE_CLIENT : ${{ secrets.GOOGLE_CLIENT }}
-      GOOGLE_SECRET : ${{ secrets.GOOGLE_SECRET }}
+      GOOGLE_CLIENT: ${{ secrets.GOOGLE_CLIENT }}
+      GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
 
     steps:
       - name: Checkout source code
