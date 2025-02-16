@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
@@ -54,6 +53,4 @@ public class Client {
     public String getRoleKey() {
         return this.role.getKey();
     }
-
-
 }

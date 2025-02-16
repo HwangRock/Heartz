@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -27,9 +28,11 @@ public class Designer {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    // 지역구
     @Column(name = "location", nullable = false)
     private String location;
 
+    // 상세 위치
     @Column(name = "address", nullable = false)
     private String address;
 
@@ -51,8 +54,17 @@ public class Designer {
     @Column(name = "text")
     private String text;
 
+    @ColumnDefault("1")
+    @Column(name = "is_online", nullable = false)
+    private Boolean isOnline = true;
+
+    @ColumnDefault("1")
+    @Column(name = "is_offline", nullable = false)
+    private Boolean isOffline = true;
+
+
     @Builder(toBuilder = true)
-    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, Integer rating, String text) {
+    public Designer(Long designerId, String name, String location, String address, String profilePhoto, String field, Integer offPrice, Integer onPrice, Integer rating, String text, Boolean isOnline, Boolean isOffline) {
         this.designerId = designerId;
         this.name = name;
         this.location = location;
@@ -63,5 +75,8 @@ public class Designer {
         this.onPrice = onPrice;
         this.rating = rating;
         this.text = text;
+        this.isOnline = isOnline;
+        this.isOffline = isOffline;
     }
+
 }

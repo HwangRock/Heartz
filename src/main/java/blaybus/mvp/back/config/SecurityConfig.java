@@ -45,7 +45,9 @@ public class SecurityConfig {
                 mvc.pattern("/login/oauth2/code/google"),
                 //mvc.pattern("/token-refresh"),
                 mvc.pattern("/favicon.ico"),
-                mvc.pattern("/error")
+                mvc.pattern("/error"),
+                mvc.pattern("/api/v1/admin/addDesigner"),
+                mvc.pattern("/api/v1/designer/**"),
         };
 
 
@@ -63,7 +65,7 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
-                        //.requestMatchers(permitAllWhiteList).permitAll()
+                        .requestMatchers(permitAllWhiteList).permitAll()
                         .requestMatchers("/test", "/oauth2/authorization/google", "/login/oauth2/code/google", "/error", "/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
