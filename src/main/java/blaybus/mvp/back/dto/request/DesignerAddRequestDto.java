@@ -14,6 +14,8 @@ public record DesignerAddRequestDto(
         Integer offPrice,
         Integer onPrice,
         Integer rating,
+        Boolean isOnLine,
+        Boolean isOffLine,
         String text
         ) {
 
@@ -28,6 +30,8 @@ public record DesignerAddRequestDto(
                 .onPrice(this.onPrice)
                 .rating(this.rating)
                 .text(this.text)
+                .isOffline(this.isOffLine)
+                .isOnline(this.isOnLine)
                 .build();
     }
 }
