@@ -19,28 +19,41 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false, length = 20)
+    @Column(name = "user_id", nullable = false, length = 50)
     private String userId;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @ColumnDefault("'0'")
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 100)
-    private String role;
-
-    @Column(name = "address")
-    private String address;
+    private Role role;
 
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "picture")
+    private String picture;
+
     @Builder
-    public Client(String userId, String name, String role, String address, String email) {
+    public Client(String userId, String name, Role role, String email, String picture) {
         this.userId = userId;
         this.name = name;
-        this.role = role;
-        this.address = address;
         this.email = email;
+        this.role = role;
+        this.picture = picture;
     }
+
+    public Client update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
+
+
 }
