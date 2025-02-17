@@ -25,6 +25,10 @@ public class Secdule {
     @JoinColumn(name = "designer_id", nullable = false, referencedColumnName = "designer_id")
     private Designer designer;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "reservation_id", nullable = false, referencedColumnName = "id")
+    private Reservation reservation;
+
     @Column(name = "date")
     private LocalDate date;
 
@@ -34,16 +38,13 @@ public class Secdule {
     @Column(name = "end_time")
     private LocalTime endTime;
 
-    @Column(name = "status")
-    private Boolean status;
-
     @Builder
-    public Secdule(Designer designer, LocalDate date, LocalTime startTime, LocalTime endTime, Boolean status) {
+    public Secdule(Designer designer, Reservation reservation, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.designer = designer;
+        this.reservation = reservation;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.status = status;
     }
 
 }
