@@ -9,5 +9,5 @@ import java.util.List;
 public interface SecduleRepository extends JpaRepository<Secdule, Long> {
 
     List<Secdule> findByDesignerIdAndDate(Long designerId, LocalDate date);
-
+    void deleteByReservationId(Long reservationId);
 }

@@ -3,21 +3,17 @@ package blaybus.mvp.back.service;
 import blaybus.mvp.back.domain.Client;
 import blaybus.mvp.back.dto.OAuthAttributes;
 import blaybus.mvp.back.dto.PrincipalDetails;
-import blaybus.mvp.back.dto.SessionUser;
 import blaybus.mvp.back.repository.ClientRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Map;
 
 @RequiredArgsConstructor

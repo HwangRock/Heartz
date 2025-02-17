@@ -40,8 +40,9 @@ public class Reservation {
     @Column(name = "meet_link")
     private String meetLink;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private ReservationStatus status;
 
     @Column(name = "created_at")
     private LocalDate createdAt;
@@ -50,7 +51,7 @@ public class Reservation {
     private String comment;
 
     @Builder
-    public Reservation(Client user, Designer designer, LocalDate date, LocalTime time, Boolean isOnline, String meetLink, String status, LocalDate createdAt, String comment) {
+    public Reservation(Client user, Designer designer, LocalDate date, LocalTime time, Boolean isOnline, String meetLink, ReservationStatus status, LocalDate createdAt, String comment) {
         this.user = user;
         this.designer = designer;
         this.date = date;
