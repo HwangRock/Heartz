@@ -116,4 +116,20 @@ public class PaymentService {
         }
     }
 
+    public PaymentResponseDTO createVirtualAccount(PaymentRequestDTO dto) {
+        // 무통장 입금은 최초 요청 시 "ready" 상태로 저장
+        PaymentEntity paymentEntity = new PaymentEntity(dto);
+        paymentEntity.setPaymentStatus("ready"); // 입금 대기 상태
+
+        paymentRepository.save(paymentEntity);
+
+        return PaymentResponseDTO.builder()
+                .impuid(dto.getImpuid())
+                .amount(dto.getAmount())
+                .status("ready") // "ready" 상태 반환
+                .transactiondate(dto.getCreateDate())
+                .build();
+    }
+
+
 }

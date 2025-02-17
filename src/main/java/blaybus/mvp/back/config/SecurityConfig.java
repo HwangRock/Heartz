@@ -29,7 +29,8 @@ public class SecurityConfig {
                                 "/login/oauth2/code/google",
                                 "/error",
                                 "/favicon.ico",
-                                "/api/v1/auth/test-token"
+                                "/api/v1/auth/test-token",
+                                "/api/v1/**"
                         ).permitAll() // 이 경로들은 인증 없이 접근 가능
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
