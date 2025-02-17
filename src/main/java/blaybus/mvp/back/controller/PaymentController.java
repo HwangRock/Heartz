@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+
 @RestController
+@RequestMapping("/api/v1/pay")
 public class PaymentController {
     private final PaymentService paymentService;
 
@@ -18,7 +20,7 @@ public class PaymentController {
     }
 
     @ResponseBody
-    @PostMapping("/verify")
+    @PostMapping("/portone")
     public PaymentResponseDTO verifyPayment(@RequestBody PaymentRequestDTO dto) throws IamportResponseException, IOException {
         return paymentService.verifyPayment(dto); // 결제 검증 및 DB 값 삽입
     }
@@ -32,5 +34,11 @@ public class PaymentController {
     public PaymentResponseDTO cancelPayment(@RequestBody PaymentRequestDTO dto) throws IamportResponseException, IOException {
         return paymentService.cancelPayment(dto);
     }
+
+    @PostMapping("/virtual")
+    public PaymentResponseDTO createVirtualAccount(@RequestBody PaymentRequestDTO dto) {
+        return paymentService.createVirtualAccount(dto);
+    }
+
 
 }
