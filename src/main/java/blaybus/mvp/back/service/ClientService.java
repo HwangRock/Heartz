@@ -1,5 +1,6 @@
 package blaybus.mvp.back.service;
 
+import blaybus.mvp.back.domain.Client;
 import blaybus.mvp.back.dto.response.CustomUserDetails;
 import blaybus.mvp.back.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,15 @@ public class ClientService {
     private final ClientRepository clientRepository;
 
     public Long userIdByEmail(String email){
-        return clientRepository.findIdByEmail(email);
+        return clientRepository.findUserIdByEmail(email);
+    }
+
+    public String nameByEmail(String email){
+        return clientRepository.findNameByEmail(email);
+    }
+
+    public Client clientByEmail(String email){
+        return clientRepository.findByEmail(email).orElse(null);
     }
 
     public String getCurrentUserEmail() {

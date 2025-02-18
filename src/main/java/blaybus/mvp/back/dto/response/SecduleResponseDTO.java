@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -12,6 +13,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class SecduleResponseDTO {
 
-    private Map<LocalTime, Boolean> availabilityMap;
+    private List<Map.Entry<LocalTime, Boolean>> availabilityMap;
 
 }

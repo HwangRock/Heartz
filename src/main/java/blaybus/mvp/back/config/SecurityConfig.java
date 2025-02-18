@@ -15,12 +15,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenProvider jwtTokenProvider;
-    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(TokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
+    public SecurityConfig(TokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
     }
+
+//    private final TokenProvider jwtTokenProvider;
+//    private final UserDetailsService userDetailsService;
+//
+//    public SecurityConfig(TokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
+//        this.jwtTokenProvider = jwtTokenProvider;
+//        this.userDetailsService = userDetailsService;
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,7 +49,8 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true) // 인증 성공 후 갈 url. 나중에 수정해야함.
                         .failureUrl("/login?error=true") // 인증 실패시 login으로 다시 이동
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                //.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

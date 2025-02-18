@@ -11,9 +11,11 @@ import blaybus.mvp.back.repository.SecduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +31,12 @@ public class SecduleService {
 
     //1. 스케줄 테이블에서 디자이너 타임 테이블 조회
     //1-1. 선택한 날짜 중 예약 가능한 시간대 list
-    public SecduleResponseDTO readDesignerTimeSecdule(SecduleReadRequestDTO secduleReadRequestDTO, Long userId){
-
-        Long designerId = secduleReadRequestDTO.getDesignerId();
-        LocalDate date = secduleReadRequestDTO.getDate();
+    public SecduleResponseDTO readDesignerTimeSecdule(Long designerId, LocalDate date){
 
         //타임테이블 map init
         Map<LocalTime, Boolean> availabilityMap = new HashMap<>();
         LocalTime startTime = LocalTime.of(10, 0);
-        for (int i = 0; i < 21; i++) {
+        for (int i = 0; i < 20; i++) {
             LocalTime currentTime = startTime.plusMinutes(i * 30);
             availabilityMap.put(currentTime, true);
         }
@@ -53,17 +52,6 @@ public class SecduleService {
                 }
             }
         }
-        //사용자의 대기 중인 예약이 있는지 확인. 만약 존재 시 테이블을 업데이트?(걔를 삭제)
-        List<Reservation> ready_reservationsByUser = reservationRepository.findByUserIdAndStatus(userId, ReservationStatus.READY);
-
-        if(!ready_reservationsByUser.isEmpty()) {
-            for (Reservation ready_reservation : ready_reservationsByUser) {
-                // 예약 테이블에서 해당 예약 삭제.(param: 예약 id)
-                reservationRepository.deleteById(ready_reservation.getId());
-                // 스케줄 테이블에서 해당 예약 삭제.(param: 예약 id)
-                secduleRepository.deleteByReservationId(ready_reservation.getId());
-            }
-        }
 
         //이미 예약 완료된 시간 정보 가져오기
         List<Secdule> reservedTimes = secduleRepository.findByDesignerIdAndDate(designerId, date);
@@ -76,8 +64,11 @@ public class SecduleService {
             }
         }
 
+        List<Map.Entry<LocalTime, Boolean>> entryList = new ArrayList<>(availabilityMap.entrySet());
+        entryList.sort(Map.Entry.comparingByKey());
+
         //secduleResponseDTO에 타임테이블 값 저장.
-        SecduleResponseDTO secduleResponseDTO = new SecduleResponseDTO(availabilityMap);
+        SecduleResponseDTO secduleResponseDTO = new SecduleResponseDTO(entryList);
 
         return secduleResponseDTO;
 
@@ -94,7 +85,6 @@ public class SecduleService {
                 .endTime(reservation.getTime().plusMinutes(30))
                 .build();
 
-        //이미 예약 완료된 시간 정보 가져오기
         return secduleRepository.save(secdule);
     }
 
@@ -109,17 +99,18 @@ public class SecduleService {
         secduleRepository.deleteByReservationId(reservationId);
     }
 
-    public void goBackPage(Long userId){
+    @Transactional
+    public void goBackPage(Long userId, LocalDate date, Designer designer){
 
-        //사용자의 대기 중인 예약이 있는지 확인. 만약 존재 시 테이블을 업데이트?(걔를 삭제)
-        List<Reservation> ready_reservationsByUser = reservationRepository.findByUserIdAndStatus(userId, ReservationStatus.READY);
+        //사용자의 대기 중인 예약이 있는지 확인 해당 날짜. 해당 디자이너.
+        List<Reservation> ready_reservationsByUser = reservationRepository.findByUserIdAndStatusAndDateAndDesigner(userId, ReservationStatus.READY, date, designer);
 
         if(!ready_reservationsByUser.isEmpty()) {
             for (Reservation ready_reservation : ready_reservationsByUser) {
-                // 예약 테이블에서 해당 예약 삭제.(param: 예약 id)
-                reservationRepository.deleteById(ready_reservation.getId());
                 // 스케줄 테이블에서 해당 예약 삭제.(param: 예약 id)
                 secduleRepository.deleteByReservationId(ready_reservation.getId());
+                // 예약 테이블에서 해당 예약 삭제.(param: 예약 id)
+                reservationRepository.deleteById(ready_reservation.getId());
             }
         }
     }
