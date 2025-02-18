@@ -1,13 +1,12 @@
 package blaybus.mvp.back.config;
 
-import blaybus.mvp.back.jwt.TokenProvider;
+import blaybus.mvp.back.jwt.JwtProvider;
 import blaybus.mvp.back.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,25 +18,17 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final TokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
-    public SecurityConfig(TokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public SecurityConfig(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
     }
-
-//    private final TokenProvider jwtTokenProvider;
-//    private final UserDetailsService userDetailsService;
-//
-//    public SecurityConfig(TokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.userDetailsService = userDetailsService;
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정 추가
-                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정
+                .csrf(csrf -> csrf.disable()) // ✅ CSRF 보호 비활성화 (JWT 사용하므로 불필요)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
@@ -45,24 +36,12 @@ public class SecurityConfig {
                                 "/error",
                                 "/favicon.ico",
                                 "/api/v1/auth/test-token",
-                                "/api/v1/**"
+                                "/api/v1/auth/google" // ✅ Google OAuth 로그인 API 허용
                         ).permitAll() // 인증 없이 접근 가능
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2Login(oauth -> oauth
-                        .successHandler((request, response, authentication) -> {
-                            String state = request.getParameter("state"); // 이전 페이지 URL 가져오기
-                            if (state != null && !state.isEmpty()) {
-                                response.sendRedirect(state); // 이전 페이지로 리디렉트
-                            } else {
-                                response.sendRedirect("/"); // 기본 리디렉트 경로 (예: 메인 페이지)
-                            }
-                        })
-                        .failureUrl("/login?error=true")
-                )
-                //.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ 세션 비활성화 (JWT 사용)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class); // ✅ JWT 인증 필터 적용
 
         return http.build();
     }

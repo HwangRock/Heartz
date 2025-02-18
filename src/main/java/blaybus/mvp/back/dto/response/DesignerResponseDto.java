@@ -11,6 +11,7 @@ import lombok.Getter;
 public class DesignerResponseDto {
     Long designerId;
     String profilePhoto; // 프로필 url
+    String name;
     String field; // 전문 분야
     String location; // 지역구
     Integer offPrice; // 대면 가격
@@ -25,6 +26,7 @@ public class DesignerResponseDto {
         return DesignerResponseDto.builder()
                 .designerId(designer.getDesignerId())
                 .profilePhoto(designer.getProfilePhoto())
+                .name(designer.getName())
                 .field(designer.getField())
                 .isOnline(designer.getIsOnline())
                 .isOffline(designer.getIsOffline())
