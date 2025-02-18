@@ -2,6 +2,7 @@ package blaybus.mvp.back.config;
 
 import blaybus.mvp.back.jwt.TokenProvider;
 import blaybus.mvp.back.filter.JwtAuthenticationFilter;
+import blaybus.mvp.back.oauth.CustomOAuth2SuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,7 +14,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.io.IOException;
 import java.util.List;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -27,12 +36,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정 추가
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정 유지
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
-                                "/login/oauth2/code/google",
+                                "/login/oauth2/code/google", // ✅ OAuth2 인증 코드 처리 엔드포인트
                                 "/error",
                                 "/favicon.ico",
                                 "/api/v1/auth/test-token",
@@ -42,14 +51,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth -> oauth
-                        .successHandler((request, response, authentication) -> {
-                            String state = request.getParameter("state"); // 이전 페이지 URL 가져오기
-                            if (state != null && !state.isEmpty()) {
-                                response.sendRedirect(state); // 이전 페이지로 리디렉트
-                            } else {
-                                response.sendRedirect("/"); // 기본 리디렉트 경로 (예: 메인 페이지)
-                            }
-                        })
+                        .successHandler(new CustomOAuth2SuccessHandler(jwtTokenProvider)) // ✅ OAuth2 로그인 성공 시 JWT 발급
                         .failureUrl("/login?error=true")
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

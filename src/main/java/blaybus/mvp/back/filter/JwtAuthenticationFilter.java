@@ -5,10 +5,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -27,15 +31,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(7);
 
             if (jwtTokenProvider.validateToken(token)) {
-                // 토큰에서 사용자 정보 추출 가능
-                String username = jwtTokenProvider.getUsername(token);
+                // ✅ 토큰에서 사용자 이메일 추출
+                String email = jwtTokenProvider.getUserEmailFromToken(token);
 
-                // SecurityContext 설정 가능 (필요 시 구현)
-                SecurityContextHolder.getContext().setAuthentication(null); // 필요에 따라 인증 설정
+                // ✅ Spring Security 인증 객체 생성 및 설정
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        new User(email, "", Collections.emptyList()), // Spring Security User 객체 생성
+                        null,
+                        Collections.emptyList() // 권한 설정 (여기선 빈 리스트)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
+        // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
     }
 }
-
