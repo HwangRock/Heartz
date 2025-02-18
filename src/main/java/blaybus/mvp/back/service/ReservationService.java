@@ -1,11 +1,15 @@
 package blaybus.mvp.back.service;
 
 import blaybus.mvp.back.domain.*;
+import blaybus.mvp.back.dto.request.PaymentRequestDTO;
 import blaybus.mvp.back.dto.request.ReservationRequestDTO;
 import blaybus.mvp.back.dto.request.ReservationSaveRequestDTO;
 import blaybus.mvp.back.dto.request.SecduleSaveRequestDTO;
+import blaybus.mvp.back.dto.response.PaymentResponseDTO;
+import blaybus.mvp.back.dto.response.ReservationListResponseDTO;
 import blaybus.mvp.back.event.ReservationEvent;
 import blaybus.mvp.back.repository.ReservationRepository;
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -14,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +28,10 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+
+    private final SecduleService secduleService;
+    private final ClientService clientService;
+    private final PaymentService paymentService;
 
     @Autowired
     private final ReservationRepository reservationRepository;
@@ -39,7 +49,6 @@ public class ReservationService {
 
     //2. 예약 생성
     @Transactional
-    @jakarta.transaction.Transactional
     public Reservation createReservation(ReservationRequestDTO reservationRequestDTO, Designer designer, Client client){
 
         ReservationSaveRequestDTO reservationSaveRequestDTO = ReservationSaveRequestDTO.builder()
@@ -52,7 +61,7 @@ public class ReservationService {
                 .createdAt((reservationRequestDTO.getCreatedAt()))
                 .build();
 
-        //대면일 경우 구글 미트 링크 생성 및 dto에 정보 저장 --> 결제 후 수행할 로직
+        //비대면일 경우 구글 미트 링크 생성 및 dto에 정보 저장
         if(reservationRequestDTO.isOnline()){
 
         }
@@ -72,18 +81,37 @@ public class ReservationService {
 
 
     //3. 예약 취소
+    @Transactional(rollbackFor = Throwable.class)
+    public void cancelReservation(Long reservationId) throws IamportResponseException, IOException {
 
+        //reservation 예약 status 변경(update by reservationId)
+        this.changeStatus(reservationId);
 
+        //스케줄 테이블에서 해당 스케줄 삭제(deleteByReservationId) 성공 시 true return?
+        secduleService.deleteSecdule(reservationId);
 
+        //해당 reservationId로 Reservation 객체 불러오기.(findById)
+        Reservation reservation = this.getReservationById(reservationId);
+
+        //해당 reservationId로 PaymentEntity 객체 불러오기(findByReservationId)
+        PaymentEntity paymentEntity = paymentService.findByReservationId(reservationId);
+
+        //불러온 PaymentEntity 및 Reservation으로 PaymentRequestDTO 생성
+        PaymentRequestDTO paymentRequestDTO = PaymentRequestDTO.builder()
+                .reservation(reservation)
+                .impuid(paymentEntity.getImpuid())
+                .build();
+        //결제 취소(결제 status 변경)
+            PaymentResponseDTO paymentResponseDTO = paymentService.cancelPayment(paymentRequestDTO);
+    }
+
+    
+    //예약 상태 변경(complete) - 결제 확인
+    //예약 상태 변경(ongoing) - 입금 대기 중
 
     public Reservation getReservationById(Long reservationId){
         return reservationRepository.findById(reservationId)
                 .orElse(null);
-    }
-
-    //구글 미트 링크 생성
-    private void createMeet() throws Exception {
-
     }
 
     public boolean isValidReservation(ReservationRequestDTO reservationRequestDTO){
@@ -97,5 +125,61 @@ public class ReservationService {
         }
         return true;
     }
+
+    public List<ReservationListResponseDTO> convertToResponseList(List<Reservation> reservations){
+        List<ReservationListResponseDTO> reservationListResponse = new ArrayList<>();
+
+        for(Reservation reservation: reservations){
+            // responseDTO에서 1~5번 정보 set
+            ReservationListResponseDTO response = this.convertToResponse(reservation);
+            reservationListResponse.add(response);
+        }
+        return reservationListResponse;
+    }
+
+    public ReservationListResponseDTO convertToResponseDetail(Reservation reservation){
+        return this.convertToResponse(reservation);
+    }
+
+    private ReservationListResponseDTO convertToResponse(Reservation reservation){
+        // responseDTO에서 1~5번 정보 set
+        ReservationListResponseDTO.ReservationListResponseDTOBuilder responseBuilder = ReservationListResponseDTO.builder()
+                .reservationId(reservation.getId())
+                .designerName(reservation.getDesigner().getName())
+                .date(reservation.getDate())
+                .time(reservation.getTime())
+                .isOnline(reservation.getIsOnline())
+                .status(reservation.getStatus().toString());
+
+        // responseDTO에서 6or7번 정보 set
+        // isOnline에 따라 meetLink 또는 address 설정
+        if (reservation.getIsOnline()) {
+            responseBuilder.meetLink(reservation.getMeetLink());
+        } else {
+            responseBuilder.address(reservation.getDesigner().getAddress());
+        }
+
+        Long reservationId = reservation.getId();
+        //가격 정보 불러오기
+        Long amount = paymentService.getAmountByReservationId(reservationId);
+        //responseDTO에서 8번 정보(마지막) set
+        responseBuilder.amount(amount);
+
+        //reservation response 객체 build
+        ReservationListResponseDTO response = responseBuilder.build();
+        return response;
+    }
+
+    //예약 상태 변경(canceled) - 취소
+    private void changeStatus(Long reservationId){
+        reservationRepository.changeStatus(reservationId);
+    }
+
+    //구글 미트 링크 생성
+    private void createMeet() throws Exception {
+
+    }
+
+
 
 }

@@ -13,6 +13,7 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 public class ReservationListResponseDTO {
+    private Long reservationId; //0. 예약 id(예약 고유 번호)
     private String designerName; //1. 디자이너 이름
     private LocalDate date; //2. 예약 날짜
     private LocalTime time; //3. 예약 시간

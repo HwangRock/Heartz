@@ -4,6 +4,7 @@ import blaybus.mvp.back.domain.Designer;
 import blaybus.mvp.back.domain.Reservation;
 import blaybus.mvp.back.domain.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserIdAndStatusAndDateAndDesigner(Long userId, ReservationStatus status, LocalDate date, Designer designer);
     @Transactional
     void deleteById(Long reservationId);
+    @Modifying
+    @Transactional
+    @Query("UPDATE Reservation r SET r.status = 'CANCELED' WHERE r.id = :reservationId")
+    void changeStatus(Long reservationId);
 
 }

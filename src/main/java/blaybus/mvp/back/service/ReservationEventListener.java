@@ -50,6 +50,6 @@ public class ReservationEventListener implements ApplicationListener<Reservation
                 }
 
             }
-        }, 1, TimeUnit.MINUTES);
+        }, 10, TimeUnit.MINUTES);
     }
 }

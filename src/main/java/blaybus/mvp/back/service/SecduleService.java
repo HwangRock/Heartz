@@ -115,4 +115,9 @@ public class SecduleService {
         }
     }
 
+    @Transactional
+    public void deleteSecdule(Long reservationId){
+        secduleRepository.deleteByReservationId(reservationId);
+    }
+
 }

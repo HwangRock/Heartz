@@ -139,8 +139,8 @@ public class PaymentService {
 
     //paymentservice - 결제 status 불러오기 필요.
     //param: reservationId, return: status
-    public String getStatusByReservationId(Long reservationId){
-        return paymentRepository.findStatusByReservationId(reservationId);
+    public PaymentEntity findByReservationId(Long reservationId){
+        return paymentRepository.findByReservationId(reservationId);
     }
 
 

@@ -13,5 +13,6 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, String> 
     PaymentEntity findByImpuid(String impuid);
     @Query("SELECT p.amount FROM PaymentEntity p WHERE p.reservation.id = :reservationId")
     Long findAmountByReservationId(@Param("reservationId") Long reservationId);
-    String findStatusByReservationId(Long reservationId); //결제 status 정보 불러오기. 예약 조회 시 필요
+    @Query("SELECT p FROM PaymentEntity p WHERE p.reservation.id = :reservationId")
+    PaymentEntity findByReservationId(@Param("reservationId")Long reservationId); //결제 status 정보 불러오기. 예약 조회 시 필요
 }
