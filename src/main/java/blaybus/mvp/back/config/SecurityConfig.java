@@ -1,8 +1,7 @@
 package blaybus.mvp.back.config;
 
-import blaybus.mvp.back.jwt.TokenProvider;
+import blaybus.mvp.back.jwt.JwtProvider;
 import blaybus.mvp.back.filter.JwtAuthenticationFilter;
-import blaybus.mvp.back.oauth.CustomOAuth2SuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,47 +13,34 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.io.IOException;
 import java.util.List;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
 
-    private final TokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
-    public SecurityConfig(TokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public SecurityConfig(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정 유지
-                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정
+                .csrf(csrf -> csrf.disable()) // ✅ CSRF 보호 비활성화 (JWT 사용하므로 불필요)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
-                                "/login/oauth2/code/google", // ✅ OAuth2 인증 코드 처리 엔드포인트
                                 "/error",
                                 "/favicon.ico",
                                 "/api/v1/auth/test-token",
-                                "/api/v1/**"
+                                "/api/v1/auth/google" // ✅ Google OAuth 로그인 API 허용
                         ).permitAll() // 인증 없이 접근 가능
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2Login(oauth -> oauth
-                        .successHandler(new CustomOAuth2SuccessHandler(jwtTokenProvider)) // ✅ OAuth2 로그인 성공 시 JWT 발급
-                        .failureUrl("/login?error=true")
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ 세션 비활성화 (JWT 사용)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class); // ✅ JWT 인증 필터 적용
 
         return http.build();
     }

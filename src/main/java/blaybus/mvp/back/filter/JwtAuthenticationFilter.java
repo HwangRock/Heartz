@@ -1,14 +1,13 @@
 package blaybus.mvp.back.filter;
 
-import blaybus.mvp.back.jwt.TokenProvider;
+import blaybus.mvp.back.jwt.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -16,10 +15,10 @@ import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final TokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(TokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
@@ -30,15 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
 
-            if (jwtTokenProvider.validateToken(token)) {
-                // ✅ 토큰에서 사용자 이메일 추출
-                String email = jwtTokenProvider.getUserEmailFromToken(token);
+            if (jwtProvider.validateToken(token)) {
+                // ✅ 토큰에서 사용자 정보 추출 (userId, role 제거)
+                String email = jwtProvider.getEmailFromToken(token);
+                String name = jwtProvider.getNameFromToken(token);
 
-                // ✅ Spring Security 인증 객체 생성 및 설정
+                // ✅ Spring Security 인증 객체 생성 (권한 없음)
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        new User(email, "", Collections.emptyList()), // Spring Security User 객체 생성
+                        email,  // Principal (email 사용)
                         null,
-                        Collections.emptyList() // 권한 설정 (여기선 빈 리스트)
+                        Collections.emptyList() // 🔥 권한 정보 없음
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
