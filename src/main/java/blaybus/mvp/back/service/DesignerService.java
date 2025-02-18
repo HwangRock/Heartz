@@ -173,4 +173,9 @@ public class DesignerService {
                 .collect(Collectors.toList());
 
     }
+
+    public Designer getDesignerById(Long designerId){
+        Optional<Designer> optionalDesigner = designerRepository.findByDesignerId(designerId);
+        return optionalDesigner.orElse(null);
+    }
 }

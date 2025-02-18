@@ -1,5 +1,8 @@
 package blaybus.mvp.back.filter;
 
+import blaybus.mvp.back.domain.Client;
+import blaybus.mvp.back.domain.Role;
+import blaybus.mvp.back.dto.response.CustomUserDetails;
 import blaybus.mvp.back.jwt.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -34,14 +39,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String email = jwtProvider.getEmailFromToken(token);
                 String name = jwtProvider.getNameFromToken(token);
 
-                // ✅ Spring Security 인증 객체 생성 (권한 없음)
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        email,  // Principal (email 사용)
-                        null,
-                        Collections.emptyList() // 🔥 권한 정보 없음
-                );
+                //Client객체 생성.
+                Client client = Client.builder()
+                        .name(name)
+                        .email(email)
+                        .role(Role.USER)
+                        .build();
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                CustomUserDetails customUserDetails = new CustomUserDetails(client);
+
+                // ✅ Spring Security 인증 객체 생성
+                Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
         }
 
@@ -49,3 +60,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

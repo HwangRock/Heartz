@@ -1,5 +1,7 @@
 package blaybus.mvp.back.domain;
 
+import blaybus.mvp.back.dto.request.ReservationRequestDTO;
+import blaybus.mvp.back.dto.request.ReservationSaveRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -21,7 +24,7 @@ public class Reservation {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private Client user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -40,17 +43,18 @@ public class Reservation {
     @Column(name = "meet_link")
     private String meetLink;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private ReservationStatus status;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "comment")
     private String comment;
 
     @Builder
-    public Reservation(Client user, Designer designer, LocalDate date, LocalTime time, Boolean isOnline, String meetLink, String status, LocalDate createdAt, String comment) {
+    public Reservation(Client user, Designer designer, LocalDate date, LocalTime time, Boolean isOnline, String meetLink, ReservationStatus status, LocalDateTime createdAt, String comment) {
         this.user = user;
         this.designer = designer;
         this.date = date;
@@ -62,4 +66,16 @@ public class Reservation {
         this.comment = comment;
     }
 
+    public Reservation(ReservationSaveRequestDTO reservationSaveRequestDTO) {
+        this(reservationSaveRequestDTO.getClient(),
+                reservationSaveRequestDTO.getDesigner(),
+                reservationSaveRequestDTO.getDate(),
+                reservationSaveRequestDTO.getTime(),
+                reservationSaveRequestDTO.isOnline(),
+                reservationSaveRequestDTO.getMeetLink(),
+                reservationSaveRequestDTO.getStatus(),
+                reservationSaveRequestDTO.getCreatedAt(),
+                reservationSaveRequestDTO.getComment()
+                );
+    }
 }
