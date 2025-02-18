@@ -131,5 +131,17 @@ public class PaymentService {
                 .build();
     }
 
+    //paymentservice - 가격 정보 불러오기 필요.
+    //param: reservationId, return: amount
+    public Long getAmountByReservationId(Long reservationId){
+        return paymentRepository.findAmountByReservationId(reservationId);
+    }
+
+    //paymentservice - 결제 status 불러오기 필요.
+    //param: reservationId, return: status
+    public PaymentEntity findByReservationId(Long reservationId){
+        return paymentRepository.findByReservationId(reservationId);
+    }
+
 
 }

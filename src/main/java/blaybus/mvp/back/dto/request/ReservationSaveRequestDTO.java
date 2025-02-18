@@ -1,5 +1,8 @@
 package blaybus.mvp.back.dto.request;
 
+import blaybus.mvp.back.domain.Client;
+import blaybus.mvp.back.domain.Designer;
+import blaybus.mvp.back.domain.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,12 +16,14 @@ import java.time.LocalTime;
 @Getter
 @Builder
 @Setter
-public class ReservationRequestDTO {
-    private Long userId;
-    private Long designerId;
+public class ReservationSaveRequestDTO {
+    private Client client;
+    private Designer designer;
     private LocalDate date;
     private LocalTime time;
-    private LocalDateTime createdAt;
     private boolean isOnline;
+    private String meetLink;
+    private ReservationStatus status;
+    private LocalDateTime createdAt;
     private String comment;
 }

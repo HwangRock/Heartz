@@ -1,5 +1,6 @@
 package blaybus.mvp.back.dto.request;
 
+import blaybus.mvp.back.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,4 +17,5 @@ public class PaymentRequestDTO {
     private String email; // 유저 이메일
     private String name; // 유저 이름
     private String createDate; // 생성 날짜
+    private Reservation reservation; //예약id
 }

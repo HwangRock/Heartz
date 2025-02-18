@@ -39,6 +39,10 @@ public class PaymentEntity {
     @Column(name="userEmail")
     private String userEmail;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "reservation_id", nullable = false, referencedColumnName = "id")
+    private Reservation reservation;
+
     @Builder
     public PaymentEntity(PaymentRequestDTO dto) {
         this.amount = dto.getAmount();
@@ -47,5 +51,6 @@ public class PaymentEntity {
         this.userName=dto.getName();
         this.userEmail=dto.getEmail();
         this.impuid=dto.getImpuid();
+        this.reservation=dto.getReservation();
     }
 }
