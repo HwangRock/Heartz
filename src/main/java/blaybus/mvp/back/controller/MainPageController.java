@@ -15,7 +15,7 @@ import java.util.List;
 public class MainPageController {
     private final DesignerService designerService;
 
-    @GetMapping("/readDesignerList")
+    @PostMapping("/readDesignerList")
     public ResponseDto<List<DesignerResponseDto>> designerList(@RequestBody DesignerRequestDto designerRequestDto) {
         return new ResponseDto<>(designerService.showDesignerList(designerRequestDto));
     }
