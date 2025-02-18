@@ -42,7 +42,14 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("/", true)
+                        .successHandler((request, response, authentication) -> {
+                            String state = request.getParameter("state"); // 이전 페이지 URL 가져오기
+                            if (state != null && !state.isEmpty()) {
+                                response.sendRedirect(state); // 이전 페이지로 리디렉트
+                            } else {
+                                response.sendRedirect("/"); // 기본 리디렉트 경로 (예: 메인 페이지)
+                            }
+                        })
                         .failureUrl("/login?error=true")
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
