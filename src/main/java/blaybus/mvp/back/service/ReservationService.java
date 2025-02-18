@@ -105,6 +105,16 @@ public class ReservationService {
             PaymentResponseDTO paymentResponseDTO = paymentService.cancelPayment(paymentRequestDTO);
     }
 
+    @Transactional
+    public void saveComment(Long reservationId, String comment){
+        reservationRepository.saveComment(reservationId, comment);
+    }
+
+    @Transactional
+    public void updateStatus(Long reservationId, ReservationStatus status){
+        reservationRepository.updateStatus(reservationId, status);
+    }
+
     
     //예약 상태 변경(complete) - 결제 확인
     //예약 상태 변경(ongoing) - 입금 대기 중

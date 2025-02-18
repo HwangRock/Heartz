@@ -128,6 +128,19 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    //5. 예약 정보 추가
+    @PostMapping("/reservationadditonal")
+    public ResponseEntity<Void> reservationadditonal(@RequestBody Map<String, Object> requestBody){
+        Long reservationId = ((Integer)requestBody.get("reservationId")).longValue();
+        String comment = (String)requestBody.get("comment");
+        ReservationStatus status = ReservationStatus.valueOf((String)requestBody.get("status"));
+
+        reservationService.saveComment(reservationId, comment);
+        reservationService.updateStatus(reservationId, status);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
