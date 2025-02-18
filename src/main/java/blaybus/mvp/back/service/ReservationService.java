@@ -22,8 +22,9 @@ public class ReservationService {
     /*
         param: userId
      */
-    public List<Reservation> readReservation(String userId) {
+    public List<Reservation> readReservation(Long userId) {
         List<Reservation> reservations = reservationRepository.findByUserId(userId);
+        return reservations;
     }
     
     //2. 예약 생성

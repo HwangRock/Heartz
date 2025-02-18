@@ -1,13 +1,14 @@
 package blaybus.mvp.back.repository;
 
 import blaybus.mvp.back.domain.Reservation;
+import blaybus.mvp.back.domain.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findByUserId(String userId);
-    List<Reservation> findByEmailAndStatus(String email, String status);
+    List<Reservation> findByUserId(Long userId);
+    List<Reservation> findByUserIdAndStatus(Long userId, ReservationStatus status);
 
 }

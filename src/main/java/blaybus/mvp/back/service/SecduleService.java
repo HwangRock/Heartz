@@ -2,6 +2,7 @@ package blaybus.mvp.back.service;
 
 import blaybus.mvp.back.domain.Designer;
 import blaybus.mvp.back.domain.Reservation;
+import blaybus.mvp.back.domain.ReservationStatus;
 import blaybus.mvp.back.domain.Secdule;
 import blaybus.mvp.back.dto.request.SecduleReadRequestDTO;
 import blaybus.mvp.back.dto.response.SecduleResponseDTO;
@@ -28,7 +29,7 @@ public class SecduleService {
 
     //1. 스케줄 테이블에서 디자이너 타임 테이블 조회
     //1-1. 선택한 날짜 중 예약 가능한 시간대 list
-    public SecduleResponseDTO readDesignerTimeSecdule(SecduleReadRequestDTO secduleReadRequestDTO){
+    public SecduleResponseDTO readDesignerTimeSecdule(SecduleReadRequestDTO secduleReadRequestDTO, Long userId){
 
         Long designerId = secduleReadRequestDTO.getDesignerId();
         LocalDate date = secduleReadRequestDTO.getDate();
@@ -52,9 +53,8 @@ public class SecduleService {
                 }
             }
         }
-
         //사용자의 대기 중인 예약이 있는지 확인. 만약 존재 시 테이블을 업데이트?(걔를 삭제)
-        List<Reservation> ready_reservationsByUser = reservationRepository.findByEmailAndStatus(email, status);
+        List<Reservation> ready_reservationsByUser = reservationRepository.findByUserIdAndStatus(userId, ReservationStatus.READY);
 
         if(!ready_reservationsByUser.isEmpty()) {
             for (Reservation ready_reservation : ready_reservationsByUser) {
@@ -107,6 +107,21 @@ public class SecduleService {
      */
     public void removeDesignerTimeSecdule(Long reservationId){
         secduleRepository.deleteByReservationId(reservationId);
+    }
+
+    public void goBackPage(Long userId){
+
+        //사용자의 대기 중인 예약이 있는지 확인. 만약 존재 시 테이블을 업데이트?(걔를 삭제)
+        List<Reservation> ready_reservationsByUser = reservationRepository.findByUserIdAndStatus(userId, ReservationStatus.READY);
+
+        if(!ready_reservationsByUser.isEmpty()) {
+            for (Reservation ready_reservation : ready_reservationsByUser) {
+                // 예약 테이블에서 해당 예약 삭제.(param: 예약 id)
+                reservationRepository.deleteById(ready_reservation.getId());
+                // 스케줄 테이블에서 해당 예약 삭제.(param: 예약 id)
+                secduleRepository.deleteByReservationId(ready_reservation.getId());
+            }
+        }
     }
 
 }

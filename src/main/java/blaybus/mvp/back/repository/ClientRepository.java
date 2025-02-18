@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findByEmail(String email); //중복 가입 확인
+    Long findIdByEmail(String email);
+
 
 
 }
