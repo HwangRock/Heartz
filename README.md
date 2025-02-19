@@ -9,11 +9,18 @@
 
 ## Tech Stack
 Frame work : springboot  
-DB : MySQL
+DB : MySQL  
 CICD : github action  
-Container : Docker
-Cloud : EC2, RDS
-Load Balancer : NGNIX
+Container : Docker  
+Cloud : EC2, RDS  
+Load Balancer : NGNIX  
+
+
+## 반성
+
+## 추후 개선해볼 사항
+
+
 
 <hr>
 
