@@ -16,7 +16,11 @@ public class AuthController {
 
     @PostMapping("/google")
     public ResponseEntity<JwtResponse> googleLogin(@RequestBody GoogleOAuthRequest request) {
-        String jwt = authService.authenticateWithGoogle(request.getAuthCode());
+        // ✅ 프론트에서 access_token으로 가져온 사용자 정보를 받아서 처리
+        String jwt = authService.authenticateWithGoogle(
+                request.getEmail(),
+                request.getName()
+        );
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 }

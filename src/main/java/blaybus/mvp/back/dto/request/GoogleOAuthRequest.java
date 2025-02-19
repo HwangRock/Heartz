@@ -6,5 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GoogleOAuthRequest {
-    private String AuthCode;
+    private String email;    // ✅ 사용자 이메일
+    private String name;     // ✅ 사용자 이름
 }
