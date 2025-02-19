@@ -52,6 +52,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*")); // ✅ 모든 Origin 허용
+        configuration.setAllowedOrigins(List.of("https://heartz4.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ 허용할 HTTP 메서드 설정
         configuration.setAllowedHeaders(List.of("*")); // ✅ 모든 헤더 허용
         configuration.setAllowCredentials(true); // ✅ 인증 포함 요청 허용
