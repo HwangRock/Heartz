@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/api/v1/auth/test-token",
                                 "/api/v1/designer/**",
+                                "api/v1/schedule/**",
                                 "/api/v1/auth/google" // ✅ Google OAuth 로그인 API 허용
                         ).permitAll() // 인증 없이 접근 가능
                         .anyRequest().authenticated() // 나머지는 인증 필요
