@@ -39,8 +39,7 @@ public class SecduleController {
     @GetMapping("/readDesignerTimeScheduleBack")
     public SecduleResponseDTO readDesignerTimeScheduleBack(@RequestParam Long designerId, LocalDate date){
 
-        //String email = clientService.getCurrentUserEmail();
-        String email = "choeunbin0324@gmail.com";
+        String email = clientService.getCurrentUserEmail();
         Long userId = clientService.userIdByEmail(email);
 
         Designer designer = designerService.getDesignerById(designerId);

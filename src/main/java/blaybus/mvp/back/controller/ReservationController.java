@@ -42,7 +42,6 @@ public class ReservationController {
     public List<ReservationListResponseDTO> readDesignerTimeSecdule(){
 
         String email = clientService.getCurrentUserEmail();
-        //String email = "choeunbin0324@gmail.com";
         Long userId = clientService.userIdByEmail(email);
 
         //예약 조회
@@ -109,8 +108,7 @@ public class ReservationController {
     public ResponseEntity<Object> readReservationDetail(@RequestParam Long reservationId){
         Map<String, Object> response = new HashMap<>();
 
-        //String email = clientService.getCurrentUserEmail();
-        String email = "choeunbin0324@gmail.com";
+        String email = clientService.getCurrentUserEmail();
         String name = clientService.nameByEmail(email);
         Long userId = clientService.userIdByEmail(email);
 
