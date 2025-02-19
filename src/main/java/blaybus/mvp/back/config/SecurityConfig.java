@@ -55,8 +55,8 @@ public class SecurityConfig {
 
         // ✅ 로컬 개발 & 배포 환경 모두 허용
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",  // 개발 환경
-                "https://heartz4.vercel.app" // 배포 환경
+                "https://heartz4.vercel.app", // 배포 환경
+                "http://localhost:5173"
         ));
 
         // ✅ 허용할 HTTP 메서드 설정
