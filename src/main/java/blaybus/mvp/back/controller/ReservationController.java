@@ -117,8 +117,12 @@ public class ReservationController {
         //Reservation 객체 가져오기
         Reservation reservation = reservationService.getReservationById(reservationId);
 
+        //가격 정보 불러오기
+        Long amount = paymentService.getAmountByReservationId(reservationId);
+
         //List<Reservation> -> List<ReservationListResponseDTO> 쿼리
         ReservationListResponseDTO reservationDetailResponse = reservationService.convertToResponseDetail(reservation);
+        reservationDetailResponse.setAmount(amount);
 
         //사용자 정보 map담기
         response.put("name", name);
