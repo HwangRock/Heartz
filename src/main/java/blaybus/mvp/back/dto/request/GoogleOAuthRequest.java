@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GoogleOAuthRequest {
-    private String idToken;
+    private String AuthCode;
 }
