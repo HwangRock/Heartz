@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,6 @@ public class ReservationController {
     public List<ReservationListResponseDTO> readDesignerTimeSecdule(){
 
         String email = clientService.getCurrentUserEmail();
-        //String email = "choeunbin0324@gmail.com";
         Long userId = clientService.userIdByEmail(email);
 
         //예약 조회
@@ -59,7 +59,7 @@ public class ReservationController {
 
     //2. 예약 생성
     @PostMapping("/createReservation")
-    public ResponseEntity<Object> createReservation(@RequestBody ReservationRequestDTO reservationRequestDTO){
+    public ResponseEntity<Object> createReservation(@RequestBody ReservationRequestDTO reservationRequestDTO) throws Exception {
 
         //response body에 담을 Map 객체 생성
         Map<String, Object> response = new HashMap<>();
@@ -99,8 +99,9 @@ public class ReservationController {
             성공 시: 200
      */
     @GetMapping("/deleteReservation")
-    public ResponseEntity<Void> deleteReservation(@RequestParam Long reservationId) throws IamportResponseException, IOException {
-        reservationService.cancelReservation(reservationId);
+    public ResponseEntity<Void> deleteReservation(@RequestParam Long reservationId) throws IamportResponseException, IOException, GeneralSecurityException {
+        String email = clientService.getCurrentUserEmail();
+        reservationService.cancelReservation(email, reservationId);
         return ResponseEntity.ok().build();
     }
 
@@ -109,8 +110,7 @@ public class ReservationController {
     public ResponseEntity<Object> readReservationDetail(@RequestParam Long reservationId){
         Map<String, Object> response = new HashMap<>();
 
-        //String email = clientService.getCurrentUserEmail();
-        String email = "choeunbin0324@gmail.com";
+        String email = clientService.getCurrentUserEmail();
         String name = clientService.nameByEmail(email);
         Long userId = clientService.userIdByEmail(email);
 

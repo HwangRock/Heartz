@@ -1,10 +1,7 @@
 package blaybus.mvp.back.service;
 
 import blaybus.mvp.back.domain.*;
-import blaybus.mvp.back.dto.request.PaymentRequestDTO;
-import blaybus.mvp.back.dto.request.ReservationRequestDTO;
-import blaybus.mvp.back.dto.request.ReservationSaveRequestDTO;
-import blaybus.mvp.back.dto.request.SecduleSaveRequestDTO;
+import blaybus.mvp.back.dto.request.*;
 import blaybus.mvp.back.dto.response.PaymentResponseDTO;
 import blaybus.mvp.back.dto.response.ReservationListResponseDTO;
 import blaybus.mvp.back.event.ReservationEvent;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +34,7 @@ public class ReservationService {
     @Autowired
     private final ReservationRepository reservationRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final GoogleMeetService googleMeetService;
 
 
     //1. 예약 조회
@@ -49,7 +48,7 @@ public class ReservationService {
 
     //2. 예약 생성
     @Transactional
-    public Reservation createReservation(ReservationRequestDTO reservationRequestDTO, Designer designer, Client client){
+    public Reservation createReservation(ReservationRequestDTO reservationRequestDTO, Designer designer, Client client) throws Exception {
 
         ReservationSaveRequestDTO reservationSaveRequestDTO = ReservationSaveRequestDTO.builder()
                 .client(client)
@@ -61,15 +60,22 @@ public class ReservationService {
                 .createdAt((reservationRequestDTO.getCreatedAt()))
                 .build();
 
+        GoogleMeetDTO googleMeetDTO = null;
         //비대면일 경우 구글 미트 링크 생성 및 dto에 정보 저장
         if(reservationRequestDTO.isOnline()){
-
+            googleMeetDTO = googleMeetService.createMeet(client.getEmail(), reservationRequestDTO.getDate(), reservationRequestDTO.getTime());
+            reservationSaveRequestDTO.setMeetLink(googleMeetDTO.getMeetLink());
         }
         //dto->entity
         Reservation reservation = new Reservation(reservationSaveRequestDTO);
 
         //정보 save
         reservationRepository.save(reservation);
+
+        if(googleMeetDTO != null){
+            googleMeetDTO.setReservation(reservation);
+            googleMeetService.saveMeet(googleMeetDTO);
+        }
 
         //예약 정보 생성 이벤트 push -> 이벤트 리스너에서 처리(비동기)
         ReservationEvent event = new ReservationEvent(this, reservation);
@@ -82,7 +88,7 @@ public class ReservationService {
 
     //3. 예약 취소
     @Transactional(rollbackFor = Throwable.class)
-    public void cancelReservation(Long reservationId) throws IamportResponseException, IOException {
+    public void cancelReservation(String email, Long reservationId) throws IamportResponseException, IOException, GeneralSecurityException {
 
         //reservation 예약 status 변경(update by reservationId)
         this.changeStatus(reservationId);
@@ -102,7 +108,11 @@ public class ReservationService {
                 .impuid(paymentEntity.getImpuid())
                 .build();
         //결제 취소(결제 status 변경)
-            PaymentResponseDTO paymentResponseDTO = paymentService.cancelPayment(paymentRequestDTO);
+        PaymentResponseDTO paymentResponseDTO = paymentService.cancelPayment(paymentRequestDTO);
+
+        //구글 미트 링크 삭제
+        googleMeetService.deleteMeet(email, reservationId);
+
     }
 
     @Transactional
