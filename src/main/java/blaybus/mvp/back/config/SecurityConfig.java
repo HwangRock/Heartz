@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/api/v1/auth/test-token",
                                 "/api/v1/designer/**",
-                                "api/v1/schedule/**",
+                                "/api/v1/schedule/**",
                                 "/api/v1/auth/google" // ✅ Google OAuth 로그인 API 허용
                         ).permitAll()
                         .anyRequest().authenticated()
