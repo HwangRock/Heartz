@@ -15,8 +15,10 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -42,6 +44,15 @@ public class GoogleCalendarService {
     // Directory to store authorization tokens for this application.
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
+    private static String CREDENTIALS_FILE_PATH;
+    @Value("${google.credentials.file}")
+    private String credentialsFilePath;
+
+    @PostConstruct
+    public void init() {
+        CREDENTIALS_FILE_PATH = credentialsFilePath;
+    }
+
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
@@ -49,7 +60,6 @@ public class GoogleCalendarService {
     private static final List<String> SCOPES =
             Collections.singletonList(CalendarScopes.CALENDAR);
 
-    private static final String CREDENTIALS_FILE_PATH = "/credentials/credentials.json";
 
 
     // credential 생성
