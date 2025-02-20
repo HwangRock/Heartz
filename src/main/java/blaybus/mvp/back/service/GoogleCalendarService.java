@@ -50,6 +50,7 @@ public class GoogleCalendarService {
             Collections.singletonList(CalendarScopes.CALENDAR);
 
     private static final String CREDENTIALS_FILE_PATH = "/credentials/credentials.json";
+    //private static final String CREDENTIALS_FILE_PATH = System.getenv("MYSECRET");
 
 
     // credential 생성

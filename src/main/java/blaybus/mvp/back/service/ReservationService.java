@@ -146,6 +146,7 @@ public class ReservationService {
         return true;
     }
 
+    @Transactional
     public List<ReservationListResponseDTO> convertToResponseList(List<Reservation> reservations){
         List<ReservationListResponseDTO> reservationListResponse = new ArrayList<>();
 
@@ -161,6 +162,7 @@ public class ReservationService {
         return this.convertToResponse(reservation);
     }
 
+    @Transactional
     private ReservationListResponseDTO convertToResponse(Reservation reservation){
         // responseDTO에서 1~5번 정보 set
         ReservationListResponseDTO.ReservationListResponseDTOBuilder responseBuilder = ReservationListResponseDTO.builder()
