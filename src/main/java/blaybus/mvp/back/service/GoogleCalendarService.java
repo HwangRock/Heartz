@@ -17,6 +17,7 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -42,6 +43,9 @@ public class GoogleCalendarService {
     // Directory to store authorization tokens for this application.
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
+    @Value("${google.credentials.file}")
+    private static String credentialsFilePath;
+
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
@@ -49,16 +53,14 @@ public class GoogleCalendarService {
     private static final List<String> SCOPES =
             Collections.singletonList(CalendarScopes.CALENDAR);
 
-    private static final String CREDENTIALS_FILE_PATH = "/credentials/credentials.json";
-    //private static final String CREDENTIALS_FILE_PATH = System.getenv("MYSECRET");
 
 
     // credential 생성
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
-        InputStream in = GoogleCalendarService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = GoogleCalendarService.class.getResourceAsStream(credentialsFilePath);
         if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
+            throw new FileNotFoundException("Resource not found: " + credentialsFilePath);
         }
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
