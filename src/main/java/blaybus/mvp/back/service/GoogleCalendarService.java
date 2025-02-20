@@ -68,7 +68,8 @@ public class GoogleCalendarService {
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+//        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setHost("hwangrock.com").setPort(8888).build();
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         //Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
         //returns an authorized Credential object.
@@ -123,6 +124,7 @@ public class GoogleCalendarService {
 //이벤트 실행
         Event confirmedEvent = service.events().insert(email, event).setConferenceDataVersion(1).setMaxAttendees(2).execute();
         System.out.println("일정 url: "+ confirmedEvent.getHtmlLink());
+        log.info("일정 url: {}", confirmedEvent.getHtmlLink());
         String eventId = confirmedEvent.getId();
         String meetLink = "https://meet.google.com/" + confirmedEvent.getConferenceData().getConferenceId();
         log.info("구글 미트 링크: {}", meetLink);
