@@ -62,20 +62,20 @@ public class ReservationService {
 
         GoogleMeetDTO googleMeetDTO = null;
         //비대면일 경우 구글 미트 링크 생성 및 dto에 정보 저장
-        if(reservationRequestDTO.isOnline()){
-            googleMeetDTO = googleMeetService.createMeet(client.getEmail(), reservationRequestDTO.getDate(), reservationRequestDTO.getTime());
-            reservationSaveRequestDTO.setMeetLink(googleMeetDTO.getMeetLink());
-        }
+//        if(reservationRequestDTO.isOnline()){
+//            googleMeetDTO = googleMeetService.createMeet(client.getEmail(), reservationRequestDTO.getDate(), reservationRequestDTO.getTime());
+//            reservationSaveRequestDTO.setMeetLink(googleMeetDTO.getMeetLink());
+//        }
         //dto->entity
         Reservation reservation = new Reservation(reservationSaveRequestDTO);
 
         //정보 save
         reservationRepository.save(reservation);
 
-        if(googleMeetDTO != null){
-            googleMeetDTO.setReservation(reservation);
-            googleMeetService.saveMeet(googleMeetDTO);
-        }
+//        if(googleMeetDTO != null){
+//            googleMeetDTO.setReservation(reservation);
+//            googleMeetService.saveMeet(googleMeetDTO);
+//        }
 
         //예약 정보 생성 이벤트 push -> 이벤트 리스너에서 처리(비동기)
         ReservationEvent event = new ReservationEvent(this, reservation);

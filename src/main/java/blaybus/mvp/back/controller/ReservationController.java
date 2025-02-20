@@ -65,8 +65,8 @@ public class ReservationController {
 
         //response body에 담을 Map 객체 생성
         Map<String, Object> response = new HashMap<>();
-        //String email = clientService.getCurrentUserEmail();
-        String email = "choeunbin0324@gmail.com";
+        String email = clientService.getCurrentUserEmail();
+        //String email = "choeunbin0324@gmail.com";
         String name = clientService.nameByEmail(email);
         Long userId = clientService.userIdByEmail(email);
         reservationRequestDTO.setUserId(userId);
