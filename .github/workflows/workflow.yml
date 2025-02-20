@@ -24,6 +24,7 @@ jobs:
       GOOGLE_CLIENT: ${{ secrets.GOOGLE_CLIENT }}
       GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      CREDENTIALS_FILE_PATH: ${{ secrets.CREDENTIALS_FILE_PATH }}
 
     steps:
       - name: Checkout source code
