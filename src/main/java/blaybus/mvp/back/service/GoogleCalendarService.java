@@ -44,6 +44,7 @@ public class GoogleCalendarService {
     // Directory to store authorization tokens for this application.
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
+    private static String CREDENTIALS_FILE_PATH;
     @Value("${google.credentials.file}")
     private String credentialsFilePath;
 
@@ -51,7 +52,6 @@ public class GoogleCalendarService {
     public void init() {
         CREDENTIALS_FILE_PATH = credentialsFilePath;
     }
-    private static String CREDENTIALS_FILE_PATH;
 
     /**
      * Global instance of the scopes required by this quickstart.
