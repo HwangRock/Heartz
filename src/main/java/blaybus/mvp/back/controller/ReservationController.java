@@ -52,8 +52,10 @@ public class ReservationController {
             //어떻게 return할지 고민
             return null;
         }
+
         //List<Reservation> -> List<ReservationListResponseDTO> 쿼리
         List<ReservationListResponseDTO> reservationListResponse = reservationService.convertToResponseList(reservations);
+
         return reservationListResponse;
     }
 
