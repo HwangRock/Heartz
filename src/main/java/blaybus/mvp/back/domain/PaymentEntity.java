@@ -39,8 +39,8 @@ public class PaymentEntity {
     @Column(name="userEmail")
     private String userEmail;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "reservation_id", nullable = false, referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "reservation_id", nullable = true, referencedColumnName = "id")
     private Reservation reservation;
 
     @Builder
